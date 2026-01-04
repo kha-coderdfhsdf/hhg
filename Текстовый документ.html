@@ -2,53 +2,106 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>HHB — Тапалка</title>
+<title>Игра Тапалка</title>
 <style>
-  body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background: #222; color: #fff; }
-  #score { font-size: 24px; margin: 20px; }
-  #progressContainer { width: 80%; height: 30px; background: #444; margin: 20px auto; border-radius: 15px; overflow: hidden; }
-  #progressBar { height: 100%; width: 0%; background: #4CAF50; transition: width 0.3s; }
-  button { padding: 20px; font-size: 24px; margin: 20px; cursor: pointer; border: none; border-radius: 10px; background-color: #f39c12; color: white; }
-  button:hover { background-color: #e67e22; }
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  #clickArea {
+    width: 300px;
+    height: 300px;
+    background-color: #4CAF50;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    user-select: none;
+  }
+  #score {
+    font-size: 24px;
+    margin: 10px 0;
+  }
+  #leaderboard {
+    margin-top: 20px;
+  }
+  table {
+    width: 50%;
+    margin: 0 auto;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 8px;
+    border: 1px solid #333;
+  }
 </style>
 </head>
 <body>
 
-<h1>HHB — Тапалка</h1>
-<div id="score">Очки: 0</div>
+<h1>Мини-игра: Тапалка</h1>
+<div id="clickArea">КЛИКНИТЕ НА МЯСТО!</div>
+<div id="score">Нажатий: 0</div>
+<button id="resetBtn">Начать заново</button>
 
-<div id="progressContainer">
-  <div id="progressBar"></div>
+<h2>Рейтинг игроков</h2>
+<div id="leaderboard">
+  <table>
+    <thead>
+      <tr>
+        <th>Имя</th>
+        <th>Очки</th>
+      </tr>
+    </thead>
+    <tbody id="leaderboardBody"></tbody>
+  </table>
 </div>
 
-<button id="tapButton">Тапать!</button>
-
 <script>
-  let score = 0;
-  const maxScore = 20; // когда достигнем, игра завершится
+  let count = 0;
+  let totalClicks = 0;
+  const clickArea = document.getElementById('clickArea');
   const scoreDisplay = document.getElementById('score');
-  const progressBar = document.getElementById('progressBar');
-  const tapButton = document.getElementById('tapButton');
+  const leaderboardBody = document.getElementById('leaderboardBody');
+  const resetBtn = document.getElementById('resetBtn');
 
-  function updateDisplay() {
-    scoreDisplay.textContent = 'Очки: ' + score;
-    const progressPercent = (score / maxScore) * 100;
-    progressBar.style.width = progressPercent + '%';
+  // Популяционный список лидеров
+  let leaders = [];
 
-    if (score >= maxScore) {
-      alert('Поздравляем! Вы достигли цели!');
-      score = 0; // можно сбросить или оставить как есть
-      updateDisplay();
+  // Обработчик клика
+  clickArea.addEventListener('click', () => {
+    count++;
+    totalClicks++;
+    scoreDisplay.textContent = 'Нажатий: ' + count;
+  });
+
+  // Обработчик начать заново
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    const name = prompt('Введите ваше имя:');
+    if (name) {
+      // Добавить результат в таблицу
+      leaders.push({ name: name, score: count });
+      // Отсортировать по убыванию
+      leaders.sort((a, b) => b.score - a.score);
+      // Ограничить рейтинг 10-ю
+      leaders = leaders.slice(0, 10);
+      renderLeaderboard();
+
+      // Обнулить счетчик
+      count = 0;
+      scoreDisplay.textContent = 'Нажатий: 0';
     }
-  }
+  });
 
-  document.getElementById('tapButton').onclick = () => {
-    score++;
-    updateDisplay();
+  function renderLeaderboard() {
+    leaderboardBody.innerHTML = '';
+    leaders.forEach((player) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${player.name}</td><td>${player.score}</td>`;
+      leaderboardBody.appendChild(row);
+    });
   }
-
-  // Изначально
-  updateDisplay();
 </script>
 
 </body>
