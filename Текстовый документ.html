@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>HHB — Тапалка</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background: #222; color: #fff; }
+  #score { font-size: 24px; margin: 20px; }
+  #progressContainer { width: 80%; height: 30px; background: #444; margin: 20px auto; border-radius: 15px; overflow: hidden; }
+  #progressBar { height: 100%; width: 0%; background: #4CAF50; transition: width 0.3s; }
+  button { padding: 20px; font-size: 24px; margin: 20px; cursor: pointer; border: none; border-radius: 10px; background-color: #f39c12; color: white; }
+  button:hover { background-color: #e67e22; }
+</style>
+</head>
+<body>
+
+<h1>HHB — Тапалка</h1>
+<div id="score">Очки: 0</div>
+
+<div id="progressContainer">
+  <div id="progressBar"></div>
+</div>
+
+<button id="tapButton">Тапать!</button>
+
+<script>
+  let score = 0;
+  const maxScore = 20; // когда достигнем, игра завершится
+  const scoreDisplay = document.getElementById('score');
+  const progressBar = document.getElementById('progressBar');
+  const tapButton = document.getElementById('tapButton');
+
+  function updateDisplay() {
+    scoreDisplay.textContent = 'Очки: ' + score;
+    const progressPercent = (score / maxScore) * 100;
+    progressBar.style.width = progressPercent + '%';
+
+    if (score >= maxScore) {
+      alert('Поздравляем! Вы достигли цели!');
+      score = 0; // можно сбросить или оставить как есть
+      updateDisplay();
+    }
+  }
+
+  document.getElementById('tapButton').onclick = () => {
+    score++;
+    updateDisplay();
+  }
+
+  // Изначально
+  updateDisplay();
+</script>
+
+</body>
+</html>
